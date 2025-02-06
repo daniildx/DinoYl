@@ -1,49 +1,98 @@
-from selectors import SelectSelector
-
 import pygame
+import sys
 
 pygame.init()
 
+# Настройки окна
 WIDTH, HEIGHT = 800, 600
-FPS = 60
-window = pygame.display.set_mode((WIDTH, HEIGHT))
-clock = pygame.time.Clock()
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption('Динозаврик')
 
-fontItem = pygame.font.Font(None, 50)
-fontItemSelect = pygame.font.Font(None, 60)
+# Цвета
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+GRAY = (200, 200, 200)
 
-items = ['Играть', 'Разработчики', 'Выход']
-select = 0
-timer = 0
+# Шрифты
+font = pygame.font.Font(None, 74)
+small_font = pygame.font.Font(None, 48)
 
-play = True
-while play:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            play = False
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP: select -= 1
-            elif event.key == pygame.K_DOWN: select += 1
-            elif event.key in [pygame.K_RETURN, pygame.K_SPACE]:
-                if items[select] == 'Выход': play = False #Задаем кнопкy
+# Функция для отображения текста на экране
+def draw_text(text, font, color, surface, x, y):
+    textobj = font.render(text, True, color)
+    textrect = textobj.get_rect()
+    textrect.topleft = (x, y)
+    surface.blit(textobj, textrect)
 
-            select = select % len(items)  #выбор иконок
+# Основной цикл меню
+def menu():
+    while True:
+        screen.fill(WHITE)
 
-    timer += 1
+        draw_text('Меню', font, BLACK, screen, 320, 50)
+        draw_text('Играть', small_font, BLACK, screen, 350, 150)
+        draw_text('Выход', small_font, BLACK, screen, 350, 250)
+        draw_text('Разработчики', small_font, BLACK, screen, 350, 350)
+        draw_text('Помощь', small_font, BLACK, screen, 350, 450)
 
+        pygame.display.flip()
 
-    window.fill('white')
-    for i in range(len(items)):
-        if i == select and timer % 30 < 15:
-            text = fontItemSelect.render(items[i], 1, 'blue')
-        else:
-            text = fontItem.render(items[i],1, 'gray')
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                x, y = event.pos
+                if 350 <= x <= 450:
+                    if 150 <= y <= 200:
+                        run_game()  # Функция запуска игры
+                    elif 250 <= y <= 300:
+                        pygame.quit()
+                        sys.exit()
+                    elif 350 <= y <= 400:
+                        show_developers()
+                    elif 450 <= y <= 500:
+                        show_help()
 
-        rect = text.get_rect(center = (WIDTH // 2, 200 + 50 * i))
-        window.blit(text, rect)
+# Функция для запуска игры
+def run_game():
+    # Здесь должен быть ваш код из файла dino.py
+    # Например:
+    import dino
+    dino.main()  # Предполагая, что в dino.py есть функция main()
 
-    pygame.display.update()
-    clock.tick(FPS)
+# Функция, отображающая информацию о разработчиках
+def show_developers():
+    while True:
+        screen.fill(WHITE)
+        draw_text('Дикунов Даниил и Марк Дорошенко', font, BLACK, screen, 50, 200)
+        draw_text('Нажмите любую клавишу, чтобы вернуться', small_font, GRAY, screen, 50, 300)
 
+        pygame.display.flip()
 
-pygame.quit()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                return  # Возвращаемся в меню
+
+# Функция, отображающая помощь
+def show_help():
+    while True:
+        screen.fill(WHITE)
+        draw_text('Telegramm: Даниил-@yhppkh, Марк-@balance0811', font, BLACK, screen, 50, 200)
+        draw_text('Нажмите любую клавишу, чтобы вернуться', small_font, GRAY, screen, 50, 300)
+
+        pygame.display.flip()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                return  # Возвращаемся в меню
+
+# Запуск главного меню
+if __name__ == '__main__':
+    menu()
