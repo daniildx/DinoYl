@@ -56,12 +56,9 @@ def menu():
 
 # Функция для запуска игры
 def run_game():
-    # Здесь должен быть ваш код из файла dino.py
-    # Например:
     import dino
-    dino.main()  # Предполагая, что в dino.py есть функция main()
+    dino.main()
 
-# Функция, отображающая информацию о разработчиках
 def show_developers():
     while True:
         screen.fill(WHITE)
@@ -77,7 +74,6 @@ def show_developers():
             elif event.type == pygame.KEYDOWN:
                 return  # Возвращаемся в меню
 
-# Функция, отображающая помощь
 def show_help():
     while True:
         screen.fill(WHITE)
