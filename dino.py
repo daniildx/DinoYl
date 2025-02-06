@@ -192,5 +192,5 @@ while play:
 
     pygame.display.update()
     clock.tick(FPS)
-scoresSave()  # сохраняем результат
+scoresSave()
 pygame.quit()
