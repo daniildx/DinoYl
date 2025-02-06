@@ -3,92 +3,122 @@ import sys
 
 pygame.init()
 
-# Настройки окна
+# Настройки экрана
 WIDTH, HEIGHT = 800, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption('Динозаврик')
+pygame.display.set_caption("YandexDino.ru ")
 
 # Цвета
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-GRAY = (200, 200, 200)
+BLUE = (0, 0, 255)
 
 # Шрифты
-font = pygame.font.Font(None, 74)
-small_font = pygame.font.Font(None, 48)
+font = pygame.font.Font(None, 45)
 
-# Функция для отображения текста на экране
+# Функция для отображения текста
 def draw_text(text, font, color, surface, x, y):
     textobj = font.render(text, True, color)
     textrect = textobj.get_rect()
-    textrect.topleft = (x, y)
+    textrect.center = (x, y)
     surface.blit(textobj, textrect)
 
-# Основной цикл меню
+# Функция для обработки меню
 def menu():
     while True:
         screen.fill(WHITE)
 
-        draw_text('Меню', font, BLACK, screen, 320, 50)
-        draw_text('Играть', small_font, BLACK, screen, 350, 150)
-        draw_text('Выход', small_font, BLACK, screen, 350, 250)
-        draw_text('Разработчики', small_font, BLACK, screen, 350, 350)
-        draw_text('Помощь', small_font, BLACK, screen, 350, 450)
+        draw_text("Yandex Dino", font, BLACK, screen, WIDTH // 2, HEIGHT // 6)
 
-        pygame.display.flip()
+        # Кнопки
+        play_button = pygame.Rect(WIDTH // 4, HEIGHT // 3, WIDTH // 2, 50)
+        exit_button = pygame.Rect(WIDTH // 4, HEIGHT // 3 + 60, WIDTH // 2, 50)
+        developers_button = pygame.Rect(WIDTH // 4, HEIGHT // 3 + 120, WIDTH // 2, 50)
+        help_button = pygame.Rect(WIDTH // 4, HEIGHT // 3 + 180, WIDTH // 2, 50)
+        about_button = pygame.Rect(WIDTH // 4, HEIGHT // 3 + 240, WIDTH // 2, 50)
+
+        pygame.draw.rect(screen, BLUE, play_button)
+        pygame.draw.rect(screen, BLUE, exit_button)
+        pygame.draw.rect(screen, BLUE, developers_button)
+        pygame.draw.rect(screen, BLUE, help_button)
+        pygame.draw.rect(screen, BLUE, about_button)
+
+        draw_text("Играть", font, WHITE, screen, WIDTH // 2, HEIGHT // 3 + 25)
+        draw_text("Выход", font, WHITE, screen, WIDTH // 2, HEIGHT // 3 + 85)
+        draw_text("Разработчики", font, WHITE, screen, WIDTH // 2, HEIGHT // 3 + 145)
+        draw_text("Помощь", font, WHITE, screen, WIDTH // 2, HEIGHT // 3 + 205)
+        draw_text("Об игре", font, WHITE, screen, WIDTH // 2, HEIGHT // 3 + 265)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                x, y = event.pos
-                if 350 <= x <= 450:
-                    if 150 <= y <= 200:
-                        run_game()  # Функция запуска игры
-                    elif 250 <= y <= 300:
-                        pygame.quit()
-                        sys.exit()
-                    elif 350 <= y <= 400:
-                        show_developers()
-                    elif 450 <= y <= 500:
-                        show_help()
 
-# Функция для запуска игры
-def run_game():
-    import dino
-    dino.main()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if play_button.collidepoint(event.pos):
+                    # Запуск игры
+                    import dino
+                    dino.run()
+                elif exit_button.collidepoint(event.pos):
+                    pygame.quit()
+                    sys.exit()
+                elif developers_button.collidepoint(event.pos):
+                    show_developers()
+                elif help_button.collidepoint(event.pos):
+                    show_help()
+                elif about_button.collidepoint(event.pos):
+                    show_about()
 
+        pygame.display.flip()
+
+# Функции для вывода информации
 def show_developers():
     while True:
         screen.fill(WHITE)
-        draw_text('Дикунов Даниил и Марк Дорошенко', font, BLACK, screen, 50, 200)
-        draw_text('Нажмите любую клавишу, чтобы вернуться', small_font, GRAY, screen, 50, 300)
-
-        pygame.display.flip()
-
+        draw_text("Дикунов Даниил и Марк Дорошенко", font, BLACK, screen, WIDTH // 2, HEIGHT // 2)
+        draw_back_button()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            elif event.type == pygame.KEYDOWN:
-                return  # Возвращаемся в меню
+            if event.type == pygame.MOUSEBUTTONDOWN and back_button.collidepoint(event.pos):
+                return
+
+        pygame.display.flip()
 
 def show_help():
     while True:
         screen.fill(WHITE)
-        draw_text('Telegramm: Даниил-@yhppkh, Марк-@balance0811', font, BLACK, screen, 50, 200)
-        draw_text('Нажмите любую клавишу, чтобы вернуться', small_font, GRAY, screen, 50, 300)
-
-        pygame.display.flip()
-
+        draw_text("Telegram: Даниил-@yhppkh, Марк-@balance0811", font, BLACK, screen, WIDTH // 2, HEIGHT // 2)
+        draw_back_button()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            elif event.type == pygame.KEYDOWN:
-                return  # Возвращаемся в меню
+            if event.type == pygame.MOUSEBUTTONDOWN and back_button.collidepoint(event.pos):
+                return
 
-# Запуск главного меню
-if __name__ == '__main__':
-    menu()
+        pygame.display.flip()
+
+def show_about():
+    while True:
+        screen.fill(WHITE)
+        draw_text("Хорошей игры!!!", font, BLACK, screen, WIDTH // 2, HEIGHT // 2)
+        draw_back_button()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN and back_button.collidepoint(event.pos):
+                return
+
+        pygame.display.flip()
+
+def draw_back_button():
+    global back_button
+    back_button = pygame.Rect(WIDTH // 4, HEIGHT // 3 + 300, WIDTH // 2, 50)
+    pygame.draw.rect(screen, BLUE, back_button)
+    draw_text("Назад", font, WHITE, screen, WIDTH // 2, HEIGHT // 3 + 325)
+
+# Запуск меню
+menu()
